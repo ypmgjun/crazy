@@ -7,7 +7,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>로또 번호 추천기</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
@@ -808,18 +807,29 @@
     // Supabase 설정 (Supabase 대시보드 Settings > API에서 확인 후 교체)
     const SUPABASE_URL = 'YOUR_SUPABASE_URL';
     const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-    let supabase = null;
-    try {
-      if (SUPABASE_URL.startsWith('https://') && typeof window.supabase !== 'undefined') {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      }
-    } catch (e) { console.warn('Supabase 초기화 실패:', e); }
+    let supabaseClient = null;
+    (function initSupabase() {
+      if (!SUPABASE_URL.startsWith('https://')) return;
+      try {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.async = true;
+        script.onload = function() {
+          try {
+            if (typeof supabase !== 'undefined' && supabase.createClient) {
+              supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+          } catch (e) { console.warn('Supabase 초기화 실패:', e); }
+        };
+        document.head.appendChild(script);
+      } catch (e) { console.warn('Supabase 스크립트 로드 실패:', e); }
+    })();
 
     async function saveToSupabase(sets) {
-      if (!supabase || !SUPABASE_URL.startsWith('https://')) return;
+      if (!supabaseClient) return;
       try {
         for (const { main, bonus } of sets) {
-          await supabase.from('lotto_draws').insert({
+          await supabaseClient.from('lotto_draws').insert({
             numbers: main,
             bonus: bonus,
             set_count: sets.length
@@ -1264,8 +1274,8 @@
       while (historyList.children.length > MAX_HISTORY) {
         historyList.removeChild(historyList.lastChild);
       }
-      // Supabase에 저장
-      await saveToSupabase(sets);
+      // Supabase에 저장 (실패해도 추첨 결과에는 영향 없음)
+      try { await saveToSupabase(sets); } catch (e) { console.warn(e); }
     }
 
     btnGenerate.addEventListener('click', () => { generate(); });

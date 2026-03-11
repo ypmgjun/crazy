@@ -1,22 +1,24 @@
-# Vercel 환경변수 설정
+# Supabase 연동
 
-## 방법 1: 대시보드에서 직접 추가 (권장)
+## 1. Supabase 프로젝트 생성
 
-1. https://vercel.com/dashboard 접속 → **crazy** 프로젝트 선택
-2. **Settings** → **Environment Variables**
-3. **Add New** → 아래 추가:
+1. https://supabase.com/dashboard/new 접속
+2. New Project 생성 (이름: lotto-crazy 등)
+3. Settings → API에서 **Project URL**, **anon public** 복사
 
-| Name | Value |
-|------|-------|
-| `SUPABASE_URL` | Supabase Project URL |
-| `SUPABASE_ANON_KEY` | Supabase anon public key |
+## 2. Vercel 환경변수 적용
 
-4. **Save** 후 **Deployments** → 최신 배포 ⋮ → **Redeploy**
-
-## 방법 2: 스크립트 사용 (Vercel CLI 필요)
+### 방법 A: 스크립트 (권장)
 
 ```powershell
-.\setup-vercel-env.ps1
+.\apply-supabase.ps1 -Url "https://xxxxx.supabase.co" -Key "eyJ..."
 ```
 
-Supabase 값은 [Supabase 대시보드](https://supabase.com/dashboard) → 프로젝트 → Settings → API에서 확인
+### 방법 B: 대시보드
+
+1. [Vercel → crazy-y5pu → Settings → Environment Variables](https://vercel.com/ypmgjuns-projects/crazy-y5pu/settings/environment-variables)
+2. SUPABASE_URL, SUPABASE_ANON_KEY 수정 후 Redeploy
+
+## 3. Supabase 테이블 생성
+
+SQL Editor에서 `supabase-setup.sql` 내용 실행

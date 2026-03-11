@@ -13,3 +13,5 @@ desktop.ini
 # Backup files
 * - 복사본*.html
 *복사본*.html
+.vercel
+public/

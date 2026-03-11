@@ -3,5 +3,13 @@
   "outputDirectory": "public",
   "rewrites": [
     { "source": "/", "destination": "/lotto-recommender.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*\\.html)",
+      "headers": [
+        { "key": "Content-Type", "value": "text/html; charset=utf-8" }
+      ]
+    }
   ]
 }

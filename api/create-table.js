@@ -19,6 +19,7 @@ CREATE POLICY "Anyone can read" ON lotto_draws FOR SELECT USING (true);
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
   const url = process.env.DATABASE_URL;
   if (!url) {
     return res.status(400).json({ ok: false, error: 'Vercel에 DATABASE_URL 환경변수를 추가하세요. Supabase > Settings > Database > Connection string (URI)' });

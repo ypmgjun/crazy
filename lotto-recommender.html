@@ -825,18 +825,24 @@
       } catch (e) { console.warn('Supabase 초기화 실패:', e); }
     })();
 
+    const STORAGE_KEY = 'lotto_draws_history';
+    function saveToLocalStorage(sets) {
+      try {
+        const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        const newItems = sets.map(({ main, bonus }) => ({ numbers: main, bonus, at: Date.now() }));
+        const merged = [...prev, ...newItems].slice(-100);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      } catch (e) { console.warn('로컬 저장 실패:', e); }
+    }
     async function saveToSupabase(sets) {
+      saveToLocalStorage(sets);
       if (!supabaseClient) return;
       try {
         for (const { main, bonus } of sets) {
-          await supabaseClient.from('lotto_draws').insert({
-            numbers: main,
-            bonus: bonus,
-            set_count: sets.length
-          });
+          await supabaseClient.from('lotto_draws').insert({ numbers: main, bonus, set_count: sets.length });
         }
       } catch (err) {
-        console.error('Supabase 저장 실패:', err);
+        console.warn('Supabase 저장 실패:', err.message);
       }
     }
 

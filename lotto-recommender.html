@@ -804,25 +804,25 @@
     const machineBalls = document.getElementById('machineBalls');
     const machineChute = document.querySelector('.machine-chute');
 
-    // Supabase 설정 (Vercel 환경변수 SUPABASE_URL, SUPABASE_ANON_KEY 사용)
-    const SUPABASE_URL = '__SUPABASE_URL__';
-    const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
+    const SUPABASE_URL = 'https://hedaelfuyslrjadukswc.supabase.co';
     let supabaseClient = null;
     (function initSupabase() {
-      if (!SUPABASE_URL.startsWith('https://')) return;
       try {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-        script.async = true;
-        script.onload = function() {
-          try {
-            if (typeof supabase !== 'undefined' && supabase.createClient) {
-              supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            }
-          } catch (e) { console.warn('Supabase 초기화 실패:', e); }
-        };
-        document.head.appendChild(script);
-      } catch (e) { console.warn('Supabase 스크립트 로드 실패:', e); }
+        fetch('/api/supabase-config').then(r => r.json()).then(({ url, key }) => {
+          if (!key || !url) return;
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+          script.async = true;
+          script.onload = function() {
+            try {
+              if (typeof supabase !== 'undefined' && supabase.createClient) {
+                supabaseClient = supabase.createClient(url, key);
+              }
+            } catch (e) { console.warn('Supabase 초기화 실패:', e); }
+          };
+          document.head.appendChild(script);
+        }).catch(() => {});
+      } catch (e) { console.warn('Supabase 초기화 실패:', e); }
     })();
 
     async function saveToSupabase(sets) {

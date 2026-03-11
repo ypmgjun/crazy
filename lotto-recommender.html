@@ -804,9 +804,9 @@
     const machineBalls = document.getElementById('machineBalls');
     const machineChute = document.querySelector('.machine-chute');
 
-    // Supabase 설정 (Supabase 대시보드 Settings > API에서 확인 후 교체)
-    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    // Supabase 설정 (Vercel 환경변수 SUPABASE_URL, SUPABASE_ANON_KEY 사용)
+    const SUPABASE_URL = '__SUPABASE_URL__';
+    const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
     let supabaseClient = null;
     (function initSupabase() {
       if (!SUPABASE_URL.startsWith('https://')) return;

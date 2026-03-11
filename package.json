@@ -2,6 +2,14 @@
   "name": "lotto-recommender",
   "private": true,
   "scripts": {
-    "build": "node build.js"
+    "build": "node build.js",
+    "setup": "node setup-automate.js",
+    "setup:browser": "node setup-browser.js"
+  },
+  "dependencies": {
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
   }
 }

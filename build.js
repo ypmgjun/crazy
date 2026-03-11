@@ -14,4 +14,5 @@ html = html.replace('__SUPABASE_ANON_KEY__', SUPABASE_ANON_KEY);
 
 if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir, { recursive: true });
 fs.writeFileSync(path.join(publicDir, 'lotto-recommender.html'), html);
+fs.copyFileSync(path.join(root, 'setup.html'), path.join(publicDir, 'setup.html'));
 console.log('Build complete: Supabase env vars injected');
